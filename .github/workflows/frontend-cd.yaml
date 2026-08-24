@@ -103,20 +103,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Get backend ELB
+      - name: Set backend URL
         id: backend
         run: |
-          BACKEND_URL=$(aws elbv2 describe-load-balancers \
-            --region us-east-1 \
-            --query "LoadBalancers[?contains(LoadBalancerName, 'backend')].DNSName | [0]" \
-            --output text)
-
-          if [ -z "$BACKEND_URL" ] || [ "$BACKEND_URL" = "None" ]; then
-            echo "Backend ELB not found"
-            exit 1
-          fi
-
-          echo "url=http://$BACKEND_URL" >> "$GITHUB_OUTPUT"
+          echo "url=http://ab74e062d3b58410699287dc46e40d30-238206297.us-east-1.elb.amazonaws.com" >> "$GITHUB_OUTPUT"
 
       - name: Build and push frontend image
         env:
